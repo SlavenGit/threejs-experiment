@@ -1,5 +1,5 @@
 var scene, camera, renderer, stats;
-var geometry, material, sphereGeo, sphereMat, sphere, box, plane;
+var geometry, material, sphereGeo, sphereMat, sphere, box, plane, cameraSpeed = 0.1;
 
 init();
 animate();
@@ -16,7 +16,7 @@ function statsHelper(mode) {
 
 function cameraHelper() {
     camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
-    camera.position.x = -30;
+    camera.position.x = 15;
     camera.position.y = 40;
     camera.position.z = 30;
     camera.lookAt(scene.position);
@@ -31,7 +31,7 @@ function lightHelper() {
     var bulb = sphereFactory(0.5);
     bulb.position.set(-10, 25, 15);
     scene.add(bulb);
-    var spotLight = new THREE.SpotLight(0xffffff);
+    var spotLight = new THREE.SpotLight(0xffffff, 2);
     spotLight.position.set(-10, 25, 15);
     spotLight.castShadow = true;
     scene.add(spotLight);
@@ -42,6 +42,7 @@ function lightHelper() {
 function rendererHelper() {
     renderer = new THREE.WebGLRenderer();
     renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0xaaaaaa);
     document.body.appendChild(renderer.domElement);
 }
 
@@ -70,7 +71,7 @@ function boxFactory(x) {
 
 function planeFactory() {
     var planeGeometry = new THREE.PlaneBufferGeometry(60, 20);
-    var planeMaterial = new THREE.MeshBasicMaterial({color: 0xcccccc});
+    var planeMaterial = new THREE.MeshLambertMaterial({color: 0xffffff});
     var plane = new THREE.Mesh(planeGeometry, planeMaterial);
     plane.rotation.x = -0.5 * Math.PI;
     plane.position.x = 15;
@@ -108,6 +109,13 @@ function animate() {
     requestAnimationFrame(animate);
 
     stats.begin();
+    if (camera.position.x >= 20 || camera.position.x <= -20) {
+        cameraSpeed *= -1;
+    }
+    console.log(camera.position);
+
+    camera.position.x += cameraSpeed;
+    camera.lookAt(scene.position);
 
     sphere.rotation.y += 0.001;
     renderer.render(scene, camera);
