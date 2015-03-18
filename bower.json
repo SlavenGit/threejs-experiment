@@ -17,5 +17,8 @@
   ],
   "dependencies": {
     "threejs": "*"
+  },
+  "devDependencies": {
+    "stats.js": "*"
   }
 }
